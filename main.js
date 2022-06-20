@@ -44,7 +44,6 @@ const posts = [
         photo_post: 'https://unsplash.it/600/300?image=171',
         likes: 80
     },
-
     {
         id: 2,
         author: {
@@ -53,8 +52,41 @@ const posts = [
         },
         date: '9-3-2021',
         text_post: 'Placeat libero ipsa nobis ipsum quibusdam quas harum ut. Distinctio minima iusto. Ad ad maiores et sint voluptate recusandae architecto. Et nihil ullam aut alias.',
-        photo_post: 'https://unsplash.it/600/300?image=2',
+        photo_post: 'https://unsplash.it/600/300?image=28',
         likes: 120
+    },
+    {
+        id: 3,
+        author: {
+            name: 'Giulio Cesare',
+            image_profile: 'https://unsplash.it/300/300?image=34',
+        },
+        date: '10-5-2021',
+        text_post: 'Placeat libero ipsa nobis ipsum quibusdam quas harum ut. Distinctio minima iusto. Ad ad maiores et sint voluptate recusandae architecto. Et nihil ullam aut alias.',
+        photo_post: 'https://unsplash.it/600/300?image=33',
+        likes: 55
+    },
+    {
+        id: 4,
+        author: {
+            name: 'Marco Antonio Lopez',
+            image_profile: 'https://unsplash.it/300/300?image=55',
+        },
+        date: '11-9-2021',
+        text_post: 'Placeat libero ipsa nobis ipsum quibusdam quas harum ut. Distinctio minima iusto. Ad ad maiores et sint voluptate recusandae architecto. Et nihil ullam aut alias.',
+        photo_post: 'https://unsplash.it/600/300?image=82',
+        likes: 110
+    },
+    {
+        id: 5,
+        author: {
+            name: 'Luca Formicola',
+            image_profile: null,
+        },
+        date: '12-6-2021',
+        text_post: 'Placeat libero ipsa nobis ipsum quibusdam quas harum ut. Distinctio minima iusto. Ad ad maiores et sint voluptate recusandae architecto. Et nihil ullam aut alias.',
+        photo_post: 'https://unsplash.it/600/300?image=67',
+        likes: 235
     },
 
 ];
@@ -63,29 +95,75 @@ const posts = [
 
 const container = document.getElementById('container');
 
-// stampo ogni post presente array nel DOM con un ciclo for
+// stampo ogni post presente nell'array nel DOM con un ciclo for
 for (let i = 0; i < posts.length; i++) {
-
     const elementPost = posts[i];
-     
-    // creo template dinamico
-    const postTemplate = 
 
+    // uso la mia funzione per creare il template del post in modo dinamico
+    const postTemplate = createTemplatePost(elementPost);
+
+    // inserisco nel DOM
+    container.innerHTML += postTemplate;
+}
+
+// Milestone 3 - Se clicchiamo sul tasto "Mi Piace" cambiamo il colore al testo del bottone e incrementiamo il counter dei likes relativo.
+
+// seleziono dal DOM e li salvo in una variabile js i button per Mi piace e il contenuto del counter
+const likeBtn = document.querySelectorAll('.js-like-button');
+const likeCounter = document.querySelectorAll('.js-likes-counter');
+
+// ciclo for per prendere singolarmente i button e salvarli in una variabile
+for(let i = 0; i < likeBtn.length; i++) {
+    const singleLikeBtn = likeBtn[i];
+
+    // al click
+    singleLikeBtn.addEventListener('click', function(event) {
+
+        // preventDefault per togliere l'atteggiamneto di default di
+        event.preventDefault();
+
+        // solo se singleLikeBtn non contiene la classe 'like-button--liked'
+        if (!this.classList.contains('like-button--liked')) {
+            // aggiungo la classe 'like-button--liked'
+            this.classList.add('like-button--liked');
+
+            // prendo il singolo elemento di likeCounter
+            const singleLikeCounter = likeCounter[i];
+            // converto il suo contenuto in numero per poterlo incrementare
+            let likeCounterNum = parseInt(singleLikeCounter.innerHTML);
+            // incremento di 1
+            likeCounterNum++;
+            // e lo sostituisco col valore incrementato
+            singleLikeCounter.innerHTML = likeCounterNum;
+        }
+    });
+}
+
+//-----------
+//Functions
+//-----------
+
+function createTemplatePost ({author, date, text_post, photo_post, likes}) {
+
+    let image_profile = (!author.image_profile) ? `<div class = 'profile-pic-default'>${author.name}</div>` : `<img class="profile-pic-default" src="${author.image_profile}" alt="${author.name}"></img>`;
+
+
+    const postTemplate =
         `<div class="post">
             <div class="post__header">
                 <div class="post-meta">                    
                     <div class="post-meta__icon">
-                        <img class="profile-pic" src="${elementPost.author.image_profile}" alt="Phil Mangione">                    
+                        ${image_profile}
                     </div>
                     <div class="post-meta__data">
-                        <div class="post-meta__author">${elementPost.author.name}</div>
-                        <div class="post-meta__time">${elementPost.date}</div>
+                        <div class="post-meta__author">${author.name}</div>
+                        <div class="post-meta__time">${date}</div>
                     </div>                    
                 </div>
             </div>
-            <div class="post__text">Placeat libero ipsa nobis ipsum quibusdam quas harum ut. Distinctio minima iusto. Ad ad maiores et sint voluptate recusandae architecto. Et nihil ullam aut alias.</div>
+            <div class="post__text">${text_post}</div>
             <div class="post__image">
-                <img src="${elementPost.photo_post}" alt="">
+                <img src="${photo_post}" alt="">
             </div>
             <div class="post__footer">
                 <div class="likes js-likes">
@@ -96,59 +174,10 @@ for (let i = 0; i < posts.length; i++) {
                         </a>
                     </div>
                     <div class="likes__counter">
-                        Piace a <b id="like-counter-1" class="js-likes-counter">${elementPost.likes}</b> persone
+                        Piace a <b id="like-counter-1" class="js-likes-counter">${likes}</b> persone
                     </div>
                 </div> 
             </div>            
         </div>`;
-
-
-    // ad ogni giro lo stampo nel DOM
-    container.innerHTML += postTemplate;
-    console.log(posts);
-
-}
-
-// Milestone 3 - Se clicchiamo sul tasto "Mi Piace" cambiamo il colore al testo del bottone e incrementiamo il counter dei likes relativo.
-
-// seleziono dal DOM e li salvo in una variabile js i button per Mi piace e il contenuto del counter
-const likeBtn = document.querySelectorAll('.js-like-button');
-console.log(likeBtn);
-
-const likeCounter = document.querySelectorAll('.js-likes-counter');
-console.log(likeCounter);
-
-// ciclo for per prendere singolarmente i button e salvarli in una variabile
-for(let i = 0; i < likeBtn.length; i++) {
-
-    const singleLikeBtn = likeBtn[i];
-
-
-    // al click incrementerò di 1 l'innerHTML convertito in numero di singleLikeCounter che è il singolo elemento del counter ossia likeCounter
-    singleLikeBtn.addEventListener('click', function(event) {
-
-        // preventDefault per togliere l'atteggiamneto di default
-        event.preventDefault();
-
-        this.classList.add('like-button--liked');
-        console.log(this);
-
-        // se al click viene aggiunta la class '.like - button--liked', singleLikeBtn non puo essere di nuovo clickato e incrementare likeCounter
-        if (this.classList.contains('like - button--liked')) {
-
-
-            // seleziono il singolo elemento di likeCounter
-            const singleLikeCounter = likeCounter[i];
-            console.log(singleLikeCounter);
-    
-            // e converto il suo innerHTML (contenuto) in numero per poterlo incrementare
-            let likeCounterNum = parseInt(singleLikeCounter.innerHTML);
-            likeCounterNum++;
-    
-            // infine lo sostituisco nel DOM
-            singleLikeCounter.innerHTML = likeCounterNum;
-
-        }
-
-    });
+    return postTemplate;
 }
