@@ -64,20 +64,7 @@ const posts = [
 
 ];
 
-// Milestone 2 - Prendendo come riferimento il layout di esempio presente nell'html, stampiamo i post del nostro feed.
-
-const container = document.getElementById('container');
-
-// stampo ogni post presente nell'array nel DOM con un ciclo for
-for (let i = 0; i < posts.length; i++) {
-    const elementPost = posts[i];
-
-    // uso la mia funzione per creare il template del post in modo dinamico
-    const postTemplate = createTemplatePost(elementPost);
-
-    // inserisco nel DOM
-    container.innerHTML += postTemplate;
-}
+drawAllPosts(posts);
 
 // Milestone 3 - Se clicchiamo sul tasto "Mi Piace" cambiamo il colore al testo del bottone e incrementiamo il counter dei likes relativo.
 
@@ -113,10 +100,28 @@ for (let i = 0; i < likeBtn.length; i++) {
 //Functions
 //-----------
 
-function createTemplatePost({ author, date, text_post, photo_post, likes }) {
+// Milestone 2 - Prendendo come riferimento il layout di esempio presente nell'html, stampiamo i post del nostro feed.
 
-    // operatore ternario
-    let image_profile = (!author.image_profile) ? `<div class = 'profile-pic-default'>${initialsUserName(author.name)}</div>` : `<img class="profile-pic-default" src="${author.image_profile}" alt="${author.name}"></img>`;
+function drawAllPosts(array) {
+
+    const container = document.getElementById('container');
+
+    // stampo ogni post presente nell'array nel DOM con un ciclo for
+    for (let i = 0; i < array.length; i++) {
+        const elementPost = array[i];
+
+        // uso la mia funzione per creare il template del post in modo dinamico
+        const postTemplate = createTemplatePost(elementPost);
+
+        // inserisco nel DOM
+        container.innerHTML += postTemplate;
+    }
+
+}
+
+function createTemplatePost({ id, author, date, text_post, photo_post, likes }) {
+
+    let image_profile = (!author.image_profile) ? `<div class = 'profile-pic-default'>${author.name}</div>` : `<img class="profile-pic-default" src="${author.image_profile}" alt="${author.name}"></img>`;
 
 
     const postTemplate =
@@ -128,24 +133,24 @@ function createTemplatePost({ author, date, text_post, photo_post, likes }) {
                     </div>
                     <div class="post-meta__data">
                         <div class="post-meta__author">${author.name}</div>
-                        <div class="post-meta__time">${localDate(date)}</div>
+                        <div class="post-meta__time">${date}</div>
                     </div>                    
                 </div>
             </div>
             <div class="post__text">${text_post}</div>
             <div class="post__image">
-                <img src="${photo_post}" alt="">
+                <img src="${photo_post}" alt="${author.name}">
             </div>
             <div class="post__footer">
                 <div class="likes js-likes">
                     <div class="likes__cta">
-                        <a class="like-button  js-like-button" href="#" data-postid="1">
+                        <a class="like-button  js-like-button" href="#" data-postid="${id}">
                             <i class="like-button__icon fas fa-thumbs-up" aria-hidden="true"></i>
                             <span class="like-button__label">Mi Piace</span>
                         </a>
                     </div>
                     <div class="likes__counter">
-                        Piace a <b id="like-counter-1" class="js-likes-counter">${likes}</b> persone
+                        Piace a <b id="like-counter-${id}" class="js-likes-counter">${likes}</b> persone
                     </div>
                 </div> 
             </div>            
@@ -181,4 +186,3 @@ function initialsUserName(name) {
     }
     return initialsUser;
 }
-
